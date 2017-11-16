@@ -1,0 +1,75 @@
+@import "./src/static/style/base.scss";
+
+.statistics-container{
+  .fa-bar-chart{
+    font-size: 22px;
+  }
+  .month-select-panel{
+    background: $under-page-color;
+    padding: 10px 0;
+    font-size: 16px;
+    .fa{
+      font-size: 22px;
+      color: $gray;
+      min-width: 50px;
+      text-align: center;
+    }
+    span{
+      p{
+        display: inline-block;
+        color: $main-font-color;
+      }
+      label{
+        margin: 0 10px;
+        font-weight: normal;
+        font-size: 14px;
+        color: $gray;
+      }
+    }
+  }
+  .char-box{
+    position: relative;
+    background: $page-color;
+    padding: 0 30px 0 30px;
+    border-bottom: 1px solid $light-gray;
+    .charts{
+      height: 315px;
+    }
+    .total-label{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 14;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      p{
+        color: $main-font-color;
+        font-size: 14px;
+        margin-top: 7px;
+      }
+    }
+  }
+  .charts-label-list{
+    height: 200px;
+    overflow: auto;
+    background: $page-color;
+    padding-left: 15px;
+    min-height: 210px;
+    .charts-label-list__item{
+      padding: 15px 15px 15px 10px;
+      border-bottom: 1px solid $light-gray;
+      font-size: 19px;
+      .tagName-icon{
+        font-size: 18px;
+        span{
+          margin-left: 20px;
+        }
+      }
+      label{
+        font-weight: 800;
+      }
+    }
+  }
+}
