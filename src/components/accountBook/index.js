@@ -140,7 +140,7 @@ class AccountBook extends Component {
                                                     (item, i) => (
                                                         <li key={i} className="flex-between">
                                                             <label className="flex-center">
-                                                                <i className={`fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
+                                                                <i className={`tag-icon fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
                                                                 <span>
                                                                     <p className="type-name">{item.tag.tagName}</p>
                                                                     <p className="bak">{item.bak}</p>

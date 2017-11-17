@@ -62,15 +62,22 @@ class Statistics extends React.Component {
         this.nextMonth = this.nextMonth.bind(this)
     }
 
-    shouldComponentUpdate(nextProps, nextState){
-        let { accountList } = nextProps
-        this.initData(accountList, nextState.year, nextState.month)
-        this.chart.update(option)
-        return true
+    componentWillMount(){
+        // console.log("componentWillMount")
+        let { fetchList } = this.props
+        fetchList()
+        this.chartData = []
     }
 
-    componentWillMount(){
-        let { accountList } = this.props
+    componentDidMount(){
+        // console.log("componentDidMount")
+        let el = document.querySelector("#chart")
+        el.style.height = el.offsetWidth + "px"
+    }
+
+    componentWillReceiveProps(nextProps){
+        // console.log("componentWillReceiveProps")
+        let { accountList } =  nextProps
         let year = new Date(accountList.list[0].header.date).getFullYear()
         let month = new Date(accountList.list[0].header.date).getMonth()
         this.initData(accountList, year, month)
@@ -78,13 +85,14 @@ class Statistics extends React.Component {
             year: year,
             month: month
         })
+        this.chart = HighCharts.chart('chart', option)
     }
 
-    componentDidMount(){
-        let el = document.querySelector("#chart")
-        el.style.height = el.offsetWidth + "px"
-
-        this.chart = HighCharts.chart('chart', option)
+    shouldComponentUpdate(nextProps, nextState){
+        let { accountList } = nextProps
+        this.initData(accountList, nextState.year, nextState.month)
+        this.chart.update(option)
+        return true
     }
 
     initData(accountList, year, month){
@@ -177,7 +185,7 @@ class Statistics extends React.Component {
                         {
                             this.chartData.length !== 0 ? this.chartData.map((item, i) => <li key={i} className="charts-label-list__item flex-between">
                                 <span className="tagName-icon">
-                                    <i className={`fa fa-${this.data[i][1].tag.icon}`} aria-hidden="true" style={{color: `#${this.data[i][1].tag.color}`}}/>
+                                    <i className={`tag-icon fa fa-${this.data[i][1].tag.icon}`} aria-hidden="true" style={{color: `#${this.data[i][1].tag.color}`}}/>
                                     <span>{item.name}</span>
                                 </span>
                                 <span>{item.y}%</span>

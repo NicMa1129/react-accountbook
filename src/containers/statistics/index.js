@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Statistics from 'components/statistics'
-
+import { fetchList } from 'actions'
 const statisticsContainer = props => <Statistics {...props}/>
 
 const mapStateProps = state => {
@@ -12,9 +12,9 @@ const mapStateProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        // addAccount: () => {
-        //     dispatch(addAccount())
-        // }
+        fetchList: () => {
+            dispatch(fetchList())
+        }
     }
 }
 

@@ -19,6 +19,10 @@ const statistics = (location, cb) => {
         cb(null, require('../containers/statistics'))
     }, 'statistics')
 }
+const enterTypeIn = (nextState, replaceState, callback) => {
+    // console.log(nextState)
+    // console.log(replaceState)
+}
 const route = (
     <Router history={hashHistory}>
         <Route path="/" component={App}>

@@ -26,8 +26,9 @@ class TypeIn extends Component {
     }
 
     componentWillMount(){
-        let { fetchTagList, tagList } = this.props
+        let { fetchTagList, tagList, fetchList } = this.props
         fetchTagList()
+        fetchList()
         this.setState({
             tagList: tagList.list
         })
@@ -120,9 +121,6 @@ class TypeIn extends Component {
         this.state.tagList.forEach((tag, index) => {
             if(index == radio.value){
                 t = Object.assign(tag, {selected: true})
-                this.setState({
-                    selectedText: tag.tagName
-                })
             }else{
                 t = Object.assign(tag, {selected: false})
             }
@@ -134,25 +132,38 @@ class TypeIn extends Component {
     }
 
     render() {
+        const fliterTag = this.state.tagList.filter(tag => tag.selected === true)
+
+        const tagRow = list => {
+            let rows = Math.ceil(list.length / 5)
+            let lis = []
+            for(let i = 0; i < rows; i++){
+                let cels = []
+                list.forEach((item, j) => {
+                    if((j < (i+1)*5) && (j >= i*5)){
+                        cels.push(<span key={j} className="tag-item">
+                                    <i className={`tag-icon fa fa-${item.icon}`} aria-hidden="true" style={{color: `#${item.color}`}}/>
+                                    <input type="radio" name="tags" value={j} hidden={true}/>
+                                    <label className={`${item.selected ? 'selected':''}`} onClick={this.radioOnChange}>{item.tagName}</label>
+                                </span>)
+                    }
+                })
+                lis.push(<li className="tag-row flex-between" key={i}>{cels}</li>)
+            }
+            return lis
+        }
         return (
             <section className="container-wrapper typein-container" >
                 <CloseHeader close={this.close}/>
                 <div className="input-box flex-between" onClick={this.showKeyBoard}>
-                    <p>{this.state.selectedText}</p>
+                    <span>
+                        <i className={`tag-icon fa fa-${fliterTag[0].icon}`} aria-hidden="true" style={{color: `#${fliterTag[0].color}`}}/>
+                        <p>{fliterTag[0].tagName}</p>
+                    </span>
                     <input type="text" placeholder="0.00" id="expensesInput" readOnly={true}/>
                 </div>
                 <div className="tags-box">
-                    {
-                        this.props.tagList.list.map((tag, index) => {
-                            return (
-                                <span key={index} className="tag-item">
-                                    <i className={`fa fa-${tag.icon}`} aria-hidden="true" style={{color: `#${tag.color}`}}/>
-                                    <input type="radio" name="tags" value={index} hidden={true}/>
-                                    <label className={`tag-sel ${tag.selected ? 'selected':''}`} onClick={this.radioOnChange}>{tag.tagName}</label>
-                                </span>
-                            )
-                        })
-                    }
+                    <ul>{tagRow(this.state.tagList)}</ul>
                 </div>
                 <KeyBoard getValue={this.getKeyBoradRes}
                           submit={this.keyBoradSubmit}

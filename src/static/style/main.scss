@@ -210,7 +210,7 @@ html,body{
           overflow: auto;
           .tag-sel{
             display: inline-block;
-            font-size: 18px;
+            //font-size: 16px;
           }
           .tag-sel:not(:first-child){
             margin-left: 5px;
@@ -314,6 +314,9 @@ html,body{
 /******Slide******/
 
 /******Tag******/
+.tag-icon{
+  font-size: 26px !important;
+}
 .tag-sel{
   border: 1px solid #efeff4;
   border-radius: 5px;
@@ -322,16 +325,6 @@ html,body{
   &.selected{
     border: 1px solid #f6c87a;
     background: #ffffff;
-  }
-}
-.tags-box{
-  min-height: 260px;
-  .tag-item{
-    display: inline-block;
-    width: 20%;
-    text-align: center;
-    line-height: 30px;
-    margin-bottom: 20px;
   }
 }
 /******Tag******/
