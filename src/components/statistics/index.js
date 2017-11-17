@@ -4,7 +4,7 @@ import HighCharts from 'highcharts'
 import { unique } from 'common/base'
 require('./index.scss')
 
-const getStatis = (list, year, month) => {
+const getStatis = (list, year, month, isExpense) => {
     let allCost = []
     let allTagName = []
 
@@ -13,7 +13,11 @@ const getStatis = (list, year, month) => {
         let curMonth = new Date(list[i].header.date).getMonth()
         if(curYear === year && curMonth === month){
             list[i].payList.forEach(item => {
-                if(item.isExpense){
+                if(isExpense && item.isExpense){
+                    allTagName.push(item.tag.tagName)
+                    allCost.push(item)
+                }
+                if(!isExpense && !item.isExpense){
                     allTagName.push(item.tag.tagName)
                     allCost.push(item)
                 }
@@ -57,11 +61,14 @@ class Statistics extends React.Component {
         super()
         this.state = {
             year: "",
-            month: ""
+            month: "",
+            isExpense: true
         }
         this.initData = this.initData.bind(this)
         this.lastMonth = this.lastMonth.bind(this)
         this.nextMonth = this.nextMonth.bind(this)
+        this.statisIncome = this.statisIncome.bind(this)
+        this.statisExpense = this.statisExpense.bind(this)
     }
 
     componentWillMount(){
@@ -91,14 +98,20 @@ class Statistics extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
+        // console.log("shouldComponentUpdate")
         let { accountList } = nextProps
-        this.initData(accountList, nextState.year, nextState.month)
+        if(nextState.isExpense){
+            this.initData(accountList, nextState.year, nextState.month)
+        }else{
+            this.initData(accountList, nextState.year, nextState.month, false)
+        }
+
         this.chart.update(option)
         return true
     }
 
-    initData(accountList, year, month){
-        let total = getStatis(accountList.list, year, month)
+    initData(accountList, year, month, isExpense = true){
+        let total = getStatis(accountList.list, year, month, isExpense)
         let chartData = []
         let totalCostArr = Object.values(total)
         let chartDataItem = Object.entries(total)
@@ -125,7 +138,7 @@ class Statistics extends React.Component {
         this.totalCost = totalCost
         this.chartData = chartData.slice()
         option.series[0].data = this.chartData
-        console.log(this.chartData)
+        // console.log(this.chartData)
 
     }
 
@@ -160,10 +173,30 @@ class Statistics extends React.Component {
         })
     }
 
+    statisIncome(){
+        if(this.state.isExpense){
+            this.setState({
+                isExpense: false
+            })
+        }
+    }
+
+    statisExpense(){
+        if(!this.state.isExpense){
+            this.setState({
+                isExpense: true
+            })
+        }
+    }
+
     render(){
         return (
             <section className="container-wrapper statistics-container">
                 <BackHeader>
+                    <div>
+                        <label className={`button-income tab-button ${this.state.isExpense?'':'selected'}`} onClick={this.statisIncome}>收入</label>
+                        <label className={`button-expense tab-button ${this.state.isExpense?'selected':''}`} onClick={this.statisExpense}>支出</label>
+                    </div>
                     <i className="fa fa-bar-chart" aria-hidden="true"/>
                 </BackHeader>
                 <div className="month-select-panel flex-center">
