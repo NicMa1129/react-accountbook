@@ -21,12 +21,11 @@ const getStatis = (list, year, month) => {
 
     let tagNameArr = unique(allTagName)
     let total = {}
-
     tagNameArr.forEach(name => {
         allCost.forEach(item => {
             if(name === item.tag.tagName){
                 total[name] = {
-                    cost: parseFloat(parseFloat(total[name]?total[name]:0) + parseFloat(item.payNum)).toFixed(2),
+                    cost: parseFloat(total[name]?total[name].cost:0) + parseFloat(item.payNum),
                     tag: item.tag
                 }
             }
@@ -116,6 +115,7 @@ class Statistics extends React.Component {
         this.totalCost = totalCost
         this.chartData = chartData.slice()
         option.series[0].data = this.chartData
+        console.log(this.chartData)
 
     }
 
