@@ -103,7 +103,7 @@ class AccountBook extends Component {
         const LastTotal = props => (
             <div className="lasttotal-box flex-between">
                 <div>
-                    <p>0</p>
+                    <p>{this.props.accountList.mainInfo.income}</p>
                     <p>{this.props.accountList.mainInfo.lastDate}月收入</p>
                 </div>
                 <span className="line"/>
@@ -128,9 +128,19 @@ class AccountBook extends Component {
                                     <div className="header-p"></div>
                                     <div className="list-block__header">
                                         <p>{dateFormat(block.header.date)}</p>
-                                        <span>
-                                            <p>支出：</p>
-                                            <p>{block.header.total}</p>
+                                        <span className="ex-in">
+                                            {
+                                                block.header.totalIncome !== 0 ? <span>
+                                                    <p>收入：</p>
+                                                    <p>{block.header.totalIncome}</p>
+                                                    </span>:''
+                                            }
+                                            {
+                                                block.header.totalExpense !== 0 ? <span className="header-expense">
+                                                    <p>支出：</p>
+                                                    <p>{block.header.totalExpense}</p>
+                                                    </span>:''
+                                            }
                                         </span>
                                     </div>
                                     <div className="list-block__body">
@@ -146,7 +156,7 @@ class AccountBook extends Component {
                                                                     <p className="bak">{item.bak}</p>
                                                                 </span>
                                                             </label>
-                                                            <h3>{item.payNum}</h3>
+                                                            <h3 className={`${item.isExpense?'':'is-expense'}`}>{item.payNum}</h3>
                                                         </li>
                                                     )
                                                 )

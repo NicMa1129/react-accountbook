@@ -10,25 +10,34 @@ const defaultState = {
     }
 }
 
-const getTotal = list => {
+const getTotal = (list, isExpense) => {
     let res = 0
-    list.forEach(item => {
-        res = parseFloat(parseFloat(res) + parseFloat(item.payNum)).toFixed(2)
-    })
+    if(isExpense){
+        list.forEach(item => {
+            if(item.isExpense){
+                res = parseFloat(parseFloat(res) + parseFloat(item.payNum)).toFixed(2)
+            }
+        })
+    }else{
+        list.forEach(item => {
+            if(!item.isExpense){
+                res = parseFloat(parseFloat(res) + parseFloat(item.payNum)).toFixed(2)
+            }
+        })
+    }
+
     return res
 }
 
 const getBudget = (list, expenses = false) => {
     let curYear = new Date().getFullYear()
     let curMonth = new Date().getMonth()
-    let res = list.filter(block => {
-        return (curYear === new Date(block.header.date).getFullYear() && curMonth === new Date(block.header.date).getMonth())
-    })
+    let res = list.filter(block => (curYear === new Date(block.header.date).getFullYear() && curMonth === new Date(block.header.date).getMonth()))
     let budget = 0
     if(res.length > 0){
         res.forEach( block => {
             block.payList.forEach( item => {
-                budget += parseFloat(item.payNum)
+                if(item.isExpense) budget += parseFloat(item.payNum)
             })
         })
     }
@@ -36,13 +45,36 @@ const getBudget = (list, expenses = false) => {
         if(res.length === 0){
             if(list.length !== 0){
                 list[0].payList.forEach(item => {
-                    budget += parseFloat(item.payNum)
+                    if(item.isExpense) budget += parseFloat(item.payNum)
                 })
             }
         }
         return budget.toFixed(2)
     }
     return TOTALBUDGET - parseFloat(budget).toFixed(2)
+}
+
+const getCurMonthIncome = list => {
+    let curYear = new Date().getFullYear()
+    let curMonth = new Date().getMonth()
+    let res = list.filter(block => (curYear === new Date(block.header.date).getFullYear() && curMonth === new Date(block.header.date).getMonth()))
+    let budget = 0
+
+    if(res.length > 0){
+        res.forEach( block => {
+            block.payList.forEach( item => {
+                if(!item.isExpense) budget += parseFloat(item.payNum)
+            })
+        })
+    }else{
+        if(list.length !== 0){
+            list[0].payList.forEach(item => {
+                if(!item.isExpense) budget += parseFloat(item.payNum)
+            })
+        }
+    }
+
+    return budget.toFixed(2)
 }
 
 const listSort = list => list.sort((a, b) => new Date(b.header.date).getTime() - new Date(a.header.date).getTime())
@@ -58,7 +90,8 @@ const accountList = (state = defaultState, action = {}) => {
                     headerName: state.mainInfo.headerName,
                     totalBudget: getBudget(list),
                     lastDate: lastMonth + 1,
-                    expenses: getBudget(list, true)
+                    expenses: getBudget(list, true),
+                    income: getCurMonthIncome(list)
                 }
             }
         }
@@ -71,13 +104,14 @@ const accountList = (state = defaultState, action = {}) => {
                     let list = [{
                         header: {
                             date: action.date,
-                            total: action.value
+                            totalExpense: action.isExpense ? action.value : 0,
+                            totalIncome: action.isExpense ? 0 : action.value
                         },
                         payList: [{
                             tag: action.tag,
                             payNum: action.value,
-                            bak: action.bak
-
+                            bak: action.bak,
+                            isExpense: action.isExpense
                         }]
                     }, ...state.list]
                     let data = {
@@ -86,7 +120,8 @@ const accountList = (state = defaultState, action = {}) => {
                             headerName: state.mainInfo.headerName,
                             totalBudget: getBudget(list),
                             lastDate: curMonth + 1,
-                            expenses: getBudget(list, true)
+                            expenses: getBudget(list, true),
+                            income: getCurMonthIncome(list)
                         }
                     }
                     localStorage.setItem("data", JSON.stringify(data))
@@ -97,9 +132,11 @@ const accountList = (state = defaultState, action = {}) => {
                             block.payList.unshift({
                                 tag: action.tag,
                                 payNum: action.value,
-                                bak: action.bak
+                                bak: action.bak,
+                                isExpense: action.isExpense
                             })
-                            block.header.total = getTotal(block.payList)
+                            block.header.totalExpense = getTotal(block.payList, true)
+                            block.header.totalIncome = getTotal(block.payList, false)
                         }
                         return block
                     })
@@ -109,7 +146,8 @@ const accountList = (state = defaultState, action = {}) => {
                             headerName: state.mainInfo.headerName,
                             totalBudget: getBudget(blockList),
                             lastDate: curMonth + 1,
-                            expenses: getBudget(blockList, true)
+                            expenses: getBudget(blockList, true),
+                            income: getCurMonthIncome(blockList)
                         }
                     }
                     localStorage.setItem("data", JSON.stringify(data))
@@ -119,12 +157,14 @@ const accountList = (state = defaultState, action = {}) => {
                 let list = [{
                     header: {
                         date: action.date,
-                        total: action.value
+                        totalExpense: action.isExpense ? action.value : 0,
+                        totalIncome: action.isExpense ? 0 : action.value
                     },
                     payList: [{
                         tag: action.tag,
                         payNum: action.value,
-                        bak: action.bak
+                        bak: action.bak,
+                        isExpense: action.isExpense
                     }]
                 }]
                 let data = {
@@ -133,7 +173,8 @@ const accountList = (state = defaultState, action = {}) => {
                         headerName: "nic",
                         totalBudget: getBudget(list),
                         lastDate: curMonth + 1,
-                        expenses: getBudget(list, true)
+                        expenses: getBudget(list, true),
+                        income: getCurMonthIncome(list),
                     }
                 }
                 localStorage.setItem("data", JSON.stringify(data))

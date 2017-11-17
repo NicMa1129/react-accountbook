@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import {
-    addAccount,
     fetchList
 } from 'actions'
 import AccountBook from 'components/accountBook'
@@ -16,9 +15,6 @@ const mapStateProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        addAccount: () => {
-            dispatch(addAccount())
-        },
         fetchList: () => {
             dispatch(fetchList())
         }

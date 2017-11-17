@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Transition } from 'react-transition-group'
 import CloseHeader from 'components/CloseHeader'
 import KeyBoard from 'components/KeyBoard'
-import Button from 'antd-mobile/lib/button'
-import 'antd-mobile/lib/button/style/css'
 require('./index.scss')
 
 class TypeIn extends Component {
@@ -13,7 +10,8 @@ class TypeIn extends Component {
         this.state = {
             keyBoardShow: false,
             tagList: [],
-            selectedText: "吃喝"
+            selectedText: "吃喝",
+            isExpense: true
         }
         this.hasTouch = 'ontouchstart' in window && !this.isTouchPad
         this.close = this.close.bind(this)
@@ -23,14 +21,16 @@ class TypeIn extends Component {
         this.touchStart = this.touchStart.bind(this)
         this.touchMove = this.touchMove.bind(this)
         this.touchEnd = this.touchEnd.bind(this)
+        this.addExpense = this.addExpense.bind(this)
+        this.addIncome = this.addIncome.bind(this)
     }
 
     componentWillMount(){
         let { fetchTagList, tagList, fetchList } = this.props
-        fetchTagList()
+        fetchTagList(true)
         fetchList()
         this.setState({
-            tagList: tagList.list
+            tagList: tagList.expense
         })
     }
 
@@ -106,7 +106,8 @@ class TypeIn extends Component {
                     tagName: tagText,
                     icon: tagS[0].icon,
                     color: tagS[0].color
-                }
+                },
+                isExpense: this.state.isExpense
             })
         }
         this.context.router.goBack()
@@ -129,6 +130,24 @@ class TypeIn extends Component {
         this.setState({
             tagList: list
         })
+    }
+
+    addExpense(){
+        if(!this.state.isExpense){
+            this.setState({
+                isExpense: true,
+                tagList: this.props.tagList.expense
+            })
+        }
+    }
+
+    addIncome(){
+        if(this.state.isExpense){
+            this.setState({
+                isExpense: false,
+                tagList: this.props.tagList.income
+            })
+        }
     }
 
     render() {
@@ -154,7 +173,10 @@ class TypeIn extends Component {
         }
         return (
             <section className="container-wrapper typein-container" >
-                <CloseHeader close={this.close}/>
+                <CloseHeader close={this.close}>
+                    <label className={`button-income tab-button ${this.state.isExpense?'':'selected'}`} onClick={this.addIncome}>收入</label>
+                    <label className={`button-expense tab-button ${this.state.isExpense?'selected':''}`} onClick={this.addExpense}>支出</label>
+                </CloseHeader>
                 <div className="input-box flex-between" onClick={this.showKeyBoard}>
                     <span>
                         <i className={`tag-icon fa fa-${fliterTag[0].icon}`} aria-hidden="true" style={{color: `#${fliterTag[0].color}`}}/>

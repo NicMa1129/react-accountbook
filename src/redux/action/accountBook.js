@@ -13,13 +13,14 @@ export const fetchList = () => dispatch => {
     dispatch(fetchListSuccess(list))
 }
 
-export const addAccount = ({value, date, bak, tag}) => {
+export const addAccount = ({value, date, bak, tag, isExpense}) => {
     return {
         type: actionTypes.ADD_ACCOUNT,
         value,
         date,
         bak,
-        tag
+        tag,
+        isExpense
     }
 }
 

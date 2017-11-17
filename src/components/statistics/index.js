@@ -13,8 +13,10 @@ const getStatis = (list, year, month) => {
         let curMonth = new Date(list[i].header.date).getMonth()
         if(curYear === year && curMonth === month){
             list[i].payList.forEach(item => {
-                allTagName.push(item.tag.tagName)
-                allCost.push(item)
+                if(item.isExpense){
+                    allTagName.push(item.tag.tagName)
+                    allCost.push(item)
+                }
             })
         }
     }
