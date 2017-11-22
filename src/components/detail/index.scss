@@ -1,0 +1,55 @@
+@import "./src/static/style/base.scss";
+
+.detail-container{
+  .detail-list{
+    background: #ffffff;
+    margin-top: 20px;
+    .detail-item{
+      padding: 20px 30px;
+      .item-label{
+        display: inline-block;
+        font-size: 16px;
+      }
+      .item-value{
+        font-size: 16px;
+      }
+      label.item-value{
+        font-weight: 700;
+      }
+    }
+    .detail-item:not(:last-child){
+      border-bottom: 1px solid $light-gray;
+    }
+  }
+  .bak-box{
+    background: #ffffff;
+    margin-top: 20px;
+    padding: 20px 30px 30px 25px;
+    font-size: 16px;
+    .bak-text{
+      color: $gray;
+      margin-top: 10px;
+    }
+  }
+  .operation-box{
+    margin-top: 30px;
+    padding: 0 35px 20px 35px;
+    .button{
+      background: #ffffff;
+      border: 1px solid $main-font-color;
+      text-align: center;
+      line-height: 45px;
+      height: 45px;
+      display: block;
+      width: 100%;
+      border-radius: 5px;
+      color: $main-font-color;
+      -webkit-appearance: none;
+      font-size: 16px;
+    }
+    .button.edit{
+      margin-bottom: 15px;
+    }
+
+  }
+}

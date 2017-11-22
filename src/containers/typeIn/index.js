@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import {
     addAccount,
     fetchTagList,
-    fetchList
+    fetchList,
+    editAccount
 } from 'actions'
 import TypeIn from 'components/typeIn'
 
@@ -26,6 +27,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchList: () => {
             dispatch(fetchList())
+        },
+        editAccount: data => {
+            dispatch(editAccount(data))
         }
     }
 }

@@ -8,13 +8,13 @@ module.exports = {
         app: [
             './src/index.js'
         ],
-        vendor: ['react', 'react-dom', 'react-router',]
+        vendor: ['react', 'react-dom', 'react-router', 'highcharts']
     },
     // devtool: 'source-map',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: "[name].js",
-        publicPath: "/git/react-accountbook/",
+        publicPath: "/git/react-accountbook/dist/",
         // publicPath: "/react-test/",
         chunkFilename: "[name].[chunkhash:8].js"
     },

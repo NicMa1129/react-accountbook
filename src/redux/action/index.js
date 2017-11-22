@@ -1,7 +1,9 @@
 import {
     addAccount,
     fetchList,
-    fetchListSuccess
+    fetchListSuccess,
+    delAccount,
+    editAccount
 } from './accountBook'
 
 import {
@@ -14,5 +16,7 @@ export {
     fetchList,
     fetchListSuccess,
     fetchTagList,
-    fetchTagListSuccess
+    fetchTagListSuccess,
+    delAccount,
+    editAccount
 }

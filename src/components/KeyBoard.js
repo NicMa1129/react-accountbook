@@ -36,7 +36,8 @@ class KeyBoard extends Component {
             actionList: ['现金', '储蓄卡', '信用卡', '支付宝', '微信零钱'],
             accountType: "现金",
             curSelectDate: today,
-            bak: ""
+            bak: "",
+            isEdit: false
         }
         this.setValue = this.setValue.bind(this)
         this.click = this.click.bind(this)
@@ -109,7 +110,8 @@ class KeyBoard extends Component {
             let result = {
                 value: this.state.value,
                 date: this.state.curSelectDate,
-                bak: this.state.bak
+                bak: this.state.bak,
+                isEdit: this.state.isEdit
             }
             this.props.submit(result)
         }
@@ -171,8 +173,31 @@ class KeyBoard extends Component {
         }
     }
 
-    componentDidMount(){
+    componentWillMount(){
+        let { defaultValue, defaultBak, defaultDate } = this.props
+        if(defaultDate !== null){
+            if(defaultValue !== 0){
+                this.setState({
+                    value: defaultValue
+                })
+            }
+            this.setState({
+                bak: defaultBak,
+                curSelectDate: defaultDate,
+                isEdit: true
+            })
+        }
+    }
 
+    componentDidMount(){
+    }
+    componentWillReceiveProps(nextProps){
+        let { defaultValue } = nextProps
+        this.setState({
+            value: defaultValue
+        },() => {
+            console.log(this.state.value)
+        })
     }
 
     onEnter(node){

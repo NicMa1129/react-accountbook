@@ -14,7 +14,7 @@ class Footer extends Component {
     }
 
     click(){
-        document.documentElement.scrollTop = 0
+        // document.documentElement.scrollTop = 0
         this.context.router.push("/typeIn")
     }
 

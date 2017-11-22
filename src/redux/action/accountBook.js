@@ -30,3 +30,24 @@ export const fetchListSuccess = (data) => {
         data
     }
 }
+
+export const delAccount = ({blockIndex, itemIndex}) => {
+    return {
+        type: actionTypes.DEL_ACCOUNT,
+        blockIndex,
+        itemIndex
+    }
+}
+
+export const editAccount = ({blockIndex, itemIndex, value, date, bak, tag, isExpense}) => {
+    return {
+        type: actionTypes.EDIT_ACCOUNT,
+        blockIndex,
+        itemIndex,
+        value,
+        date,
+        bak,
+        tag,
+        isExpense
+    }
+}

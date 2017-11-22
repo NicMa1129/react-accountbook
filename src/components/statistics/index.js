@@ -82,10 +82,10 @@ class Statistics extends React.Component {
         // console.log("componentDidMount")
         let el = document.querySelector("#chart")
         el.style.height = el.offsetWidth + "px"
+        // this.chart = HighCharts.chart('chart', option)
     }
 
     componentWillReceiveProps(nextProps){
-        // console.log("componentWillReceiveProps")
         let { accountList } =  nextProps
         let year = new Date(accountList.list[0].header.date).getFullYear()
         let month = new Date(accountList.list[0].header.date).getMonth()
@@ -98,7 +98,6 @@ class Statistics extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        // console.log("shouldComponentUpdate")
         let { accountList } = nextProps
         if(nextState.isExpense){
             this.initData(accountList, nextState.year, nextState.month)

@@ -1,8 +1,18 @@
 import React from 'react'
-import { Router, Route, hashHistory, browserHistory, IndexRoute } from 'react-router'
+import { Router, Route, hashHistory, browserHistory, IndexRoute, applyRouterMiddleware } from 'react-router'
+import {
+    useHistoryRestoreScroll,
+    useRouterRestoreScroll
+} from 'react-router-restore-scroll'
 import { Provider } from 'react-redux'
 import store from '../redux/store'
 import App from 'containers/app'
+
+const createHistory = useHistoryRestoreScroll(() => browserHistory)
+
+const routerRender = applyRouterMiddleware(
+    useRouterRestoreScroll()
+)
 
 const accountBook = (location, cb) => {
     require.ensure([], require => {
@@ -19,17 +29,24 @@ const statistics = (location, cb) => {
         cb(null, require('../containers/statistics'))
     }, 'statistics')
 }
+const detail = (location, cb) => {
+    require.ensure([], require => {
+        cb(null, require('../containers/detail'))
+    }, 'detail')
+}
 const enterTypeIn = (nextState, replaceState, callback) => {
-    // console.log(nextState)
-    // console.log(replaceState)
+    console.log(nextState)
+    console.log(replaceState)
+    callback()
 }
 const route = (
-    <Router history={hashHistory}>
+    <Router history={browserHistory}>
         <Route path="/" component={App}>
             <IndexRoute getComponent={accountBook}/>
             <Route path="accountBook" getComponent={accountBook}/>
-            <Route path="typeIn" getComponent={typeIn}/>
+            <Route path="typeIn(/:blockId/:itemId)" getComponent={typeIn} onEnter={enterTypeIn}/>
             <Route path="statistics" getComponent={statistics}/>
+            <Route path="detail/:id" getComponent={detail}/>
         </Route>
     </Router>
 )

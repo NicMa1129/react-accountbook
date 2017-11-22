@@ -10,6 +10,17 @@ export const dateFormat = date => {
     return y + "-" + m + "-" + day
 }
 
+export const dateTimeFormat = date => {
+    var d = new Date(date)
+    var y = d.getFullYear()
+    var m = d.getMonth() < 9 ? "0" + (d.getMonth() + 1) : d.getMonth() + 1
+    var day = d.getDate() < 10 ? "0" + d.getDate() : d.getDate()
+    var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours()
+    var mm = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()
+
+    return y + "-" + m + "-" + day + " " + h + ":" + mm
+}
+
 export const callApi = (url, option) => {
     return fetch(url, option).then(
         response => {

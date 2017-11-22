@@ -40,6 +40,7 @@
     "react-redux": "^5.0.6",
     "react-router": "^2.6.1",
     "react-router-page-transition": "^3.0.2",
+    "react-router-restore-scroll": "0.0.1",
     "react-router-transition": "^1.1.1",
     "react-router-transitions": "^2.3.3",
     "react-scroll": "^1.6.4",

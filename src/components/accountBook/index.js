@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { dateFormat, scrollThrottler } from 'common/base'
 import Footer from 'components/Footer'
 import Header from 'components/Header'
-import { Transition } from 'react-transition-group'
+import { RestoreScroll } from 'react-router-restore-scroll'
 
 require('./index.scss')
 
@@ -18,6 +19,7 @@ class AccountBook extends Component {
 
         this.scrollThrottler = this.scrollThrottler.bind(this)
         this.actualScrollHandler = this.actualScrollHandler.bind(this)
+        this.goItemDetail = this.goItemDetail.bind(this)
     }
 
     componentWillMount(){
@@ -79,18 +81,22 @@ class AccountBook extends Component {
     // }
 
     componentDidMount(){
-        let head = document.querySelector(".main-head")
-        head.classList.add("fixed")
+        let list = this.refs.list
 
-        window.addEventListener("scroll", this.scrollThrottler, false)
+        list.addEventListener("scroll", this.scrollThrottler, false)
     }
 
     componentWillUnmount(){
-        window.removeEventListener("scroll", this.scrollThrottler, false)
+        list.removeEventListener("scroll", this.scrollThrottler, false)
     }
 
     componentWillReceiveProps(nextProps){
 
+    }
+
+    goItemDetail(e){
+        let id = e.target.id
+        this.context.router.push("/Detail/"+id)
     }
 
     render(){
@@ -148,7 +154,7 @@ class AccountBook extends Component {
                                             {
                                                 block.payList.map(
                                                     (item, i) => (
-                                                        <li key={i} className="flex-between">
+                                                        <li id={`${index}_${i}`} key={i} className="flex-between" onClick={this.goItemDetail}>
                                                             <label className="flex-center">
                                                                 <i className={`tag-icon fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
                                                                 <span>
@@ -173,6 +179,10 @@ class AccountBook extends Component {
             </section>
         )
     }
+}
+
+AccountBook.contextTypes = {
+    router: PropTypes.object.isRequired
 }
 
 export default AccountBook

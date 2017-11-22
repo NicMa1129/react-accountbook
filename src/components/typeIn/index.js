@@ -11,7 +11,13 @@ class TypeIn extends Component {
             keyBoardShow: false,
             tagList: [],
             selectedText: "吃喝",
-            isExpense: true
+            isExpense: true,
+            defaultValue: 0,
+            curValue: 0,
+            defaultBak: "",
+            defaultDate: null,
+            blockIndex: null,
+            itemIndex: null
         }
         this.hasTouch = 'ontouchstart' in window && !this.isTouchPad
         this.close = this.close.bind(this)
@@ -26,11 +32,36 @@ class TypeIn extends Component {
     }
 
     componentWillMount(){
-        let { fetchTagList, tagList, fetchList } = this.props
+        let { fetchTagList, tagList, fetchList, params, accountList } = this.props
         fetchTagList(true)
         fetchList()
+        let { blockId, itemId } = params
+        let defaultItem = blockId?accountList.list[blockId].payList[itemId]:null
+        if(defaultItem !== null){
+            if(defaultItem.isExpense){
+                tagList = tagList.expense
+            }else{
+                tagList = tagList.income
+            }
+            tagList.forEach(tag => {
+                if(tag.tagName === defaultItem.tag.tagName){
+                    tag.selected = true
+                }else{
+                    tag.selected = false
+                }
+            })
+        }else{
+            tagList = tagList.expense
+        }
         this.setState({
-            tagList: tagList.expense
+            tagList: tagList,
+            defaultValue: defaultItem !== null?defaultItem.payNum:0,
+            curValue: defaultItem !== null?defaultItem.payNum:0,
+            isExpense: defaultItem !== null?defaultItem.isExpense:true,
+            defaultBak: defaultItem !== null?defaultItem.bak:"",
+            defaultDate: defaultItem !== null?accountList.list[blockId].header.date:null,
+            blockIndex: defaultItem !== null?blockId:null,
+            itemIndex: defaultItem !== null?itemId:null
         })
     }
 
@@ -42,6 +73,10 @@ class TypeIn extends Component {
         scrollWrap.addEventListener('mousedown', this.touchStart, false)
         scrollWrap.addEventListener('mousemove', this.touchMove, false)
         scrollWrap.addEventListener('mouseup', this.touchEnd, false)
+    }
+
+    componentWillReceiveProps(nextProps){
+
     }
 
     // componentWillUnmount(){
@@ -90,15 +125,18 @@ class TypeIn extends Component {
         this.context.router.goBack()
     }
     getKeyBoradRes(value){
-        let el = document.getElementById("expensesInput")
-        el.value = value
+        this.setState({
+            curValue: value
+        })
     }
-    keyBoradSubmit({value, date, bak}){
-        let { addAccount } = this.props
-        if(value > 0){
-            let tagS = this.state.tagList.filter(tag => tag.selected === true)
-            let tagText = tagS.length > 0 ? tagS[0].tagName : "呵呵"
-            addAccount({
+    keyBoradSubmit({value, date, bak, isEdit}){
+        let { addAccount, editAccount } = this.props
+        let tagS = this.state.tagList.filter(tag => tag.selected === true)
+        let tagText = tagS.length > 0 ? tagS[0].tagName : "呵呵"
+        if(isEdit){
+            editAccount({
+                blockIndex: this.state.blockIndex,
+                itemIndex: this.state.itemIndex,
                 value: value,
                 date: date,
                 bak: bak,
@@ -109,8 +147,22 @@ class TypeIn extends Component {
                 },
                 isExpense: this.state.isExpense
             })
+        }else{
+            if(value > 0){
+                addAccount({
+                    value: value,
+                    date: date,
+                    bak: bak,
+                    tag: {
+                        tagName: tagText,
+                        icon: tagS[0].icon,
+                        color: tagS[0].color
+                    },
+                    isExpense: this.state.isExpense
+                })
+            }
         }
-        this.context.router.goBack()
+        this.context.router.push('/accountbook')
     }
 
     radioOnChange(e){
@@ -182,7 +234,7 @@ class TypeIn extends Component {
                         <i className={`tag-icon fa fa-${fliterTag[0].icon}`} aria-hidden="true" style={{color: `#${fliterTag[0].color}`}}/>
                         <p>{fliterTag[0].tagName}</p>
                     </span>
-                    <input type="text" placeholder="0.00" id="expensesInput" readOnly={true}/>
+                    <input type="text" placeholder="0.00" id="expensesInput" readOnly={true} value={this.state.curValue}/>
                 </div>
                 <div className="tags-box">
                     <ul>{tagRow(this.state.tagList)}</ul>
@@ -190,7 +242,10 @@ class TypeIn extends Component {
                 <KeyBoard getValue={this.getKeyBoradRes}
                           submit={this.keyBoradSubmit}
                           show={this.state.keyBoardShow}
-                          bakList={this.state.tagList.filter(tag => tag.selected === true)[0].bakList}/>
+                          bakList={this.state.tagList.filter(tag => tag.selected === true)[0].bakList}
+                          defaultValue={this.state.defaultValue}
+                            defaultBak={this.state.defaultBak}
+                        defaultDate={this.state.defaultDate}/>
             </section>
         )
     }
