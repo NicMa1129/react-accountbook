@@ -35,7 +35,7 @@ class Footer extends Component {
                                 textAlign: 'center',
                                 background: '#f5a01f',
                                 color: '#fff'}}>记</Button>
-                <i className="fa fa-bars" aria-hidden="true"/>
+                <i className="fa fa-bars" aria-hidden="true" onClick={this.props.showActionSheet}/>
             </footer>
         )
     }

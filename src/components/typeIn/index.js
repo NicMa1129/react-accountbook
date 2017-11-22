@@ -32,9 +32,8 @@ class TypeIn extends Component {
     }
 
     componentWillMount(){
-        let { fetchTagList, tagList, fetchList, params, accountList } = this.props
-        fetchTagList(true)
-        fetchList()
+        console.log("typein componentWillMount")
+        let { fetchTagList, tagList, params, accountList } = this.props
         let { blockId, itemId } = params
         let defaultItem = blockId?accountList.list[blockId].payList[itemId]:null
         if(defaultItem !== null){
@@ -66,6 +65,7 @@ class TypeIn extends Component {
     }
 
     componentDidMount(){
+        console.log("typein componentDidMount")
         let scrollWrap = document.querySelector(".tags-box")
         scrollWrap.addEventListener('touchstart', this.touchStart, false)
         scrollWrap.addEventListener('touchmove', this.touchMove, false)
@@ -76,6 +76,7 @@ class TypeIn extends Component {
     }
 
     componentWillReceiveProps(nextProps){
+        console.log("typein componentWillReceiveProps")
 
     }
 
@@ -205,23 +206,27 @@ class TypeIn extends Component {
     render() {
         const fliterTag = this.state.tagList.filter(tag => tag.selected === true)
 
+
         const tagRow = list => {
-            let rows = Math.ceil(list.length / 5)
-            let lis = []
-            for(let i = 0; i < rows; i++){
-                let cels = []
-                list.forEach((item, j) => {
-                    if((j < (i+1)*5) && (j >= i*5)){
-                        cels.push(<span key={j} className="tag-item">
+            if(list.length !== 0){
+                let rows = Math.ceil(list.length / 5)
+                let lis = []
+                for(let i = 0; i < rows; i++){
+                    let cels = []
+                    list.forEach((item, j) => {
+                        if((j < (i+1)*5) && (j >= i*5)){
+                            cels.push(<span key={j} className="tag-item">
                                     <i className={`tag-icon fa fa-${item.icon}`} aria-hidden="true" style={{color: `#${item.color}`}}/>
                                     <input type="radio" name="tags" value={j} hidden={true}/>
                                     <label className={`${item.selected ? 'selected':''}`} onClick={this.radioOnChange}>{item.tagName}</label>
                                 </span>)
-                    }
-                })
-                lis.push(<li className="tag-row flex-between" key={i}>{cels}</li>)
+                        }
+                    })
+                    lis.push(<li className="tag-row flex-between" key={i}>{cels}</li>)
+                }
+                return lis
             }
-            return lis
+            return ""
         }
         return (
             <section className="container-wrapper typein-container" >
@@ -231,8 +236,8 @@ class TypeIn extends Component {
                 </CloseHeader>
                 <div className="input-box flex-between" onClick={this.showKeyBoard}>
                     <span>
-                        <i className={`tag-icon fa fa-${fliterTag[0].icon}`} aria-hidden="true" style={{color: `#${fliterTag[0].color}`}}/>
-                        <p>{fliterTag[0].tagName}</p>
+                        <i className={`tag-icon fa fa-${this.state.tagList.length !== 0?fliterTag[0].icon:''}`} aria-hidden="true" style={{color: `#${this.state.tagList.length !== 0?fliterTag[0].color:''}`}}/>
+                        <p>{this.state.tagList.length !== 0?fliterTag[0].tagName:''}</p>
                     </span>
                     <input type="text" placeholder="0.00" id="expensesInput" readOnly={true} value={this.state.curValue}/>
                 </div>
@@ -242,7 +247,7 @@ class TypeIn extends Component {
                 <KeyBoard getValue={this.getKeyBoradRes}
                           submit={this.keyBoradSubmit}
                           show={this.state.keyBoardShow}
-                          bakList={this.state.tagList.filter(tag => tag.selected === true)[0].bakList}
+                          bakList={this.state.tagList.length !== 0?this.state.tagList.filter(tag => tag.selected === true)[0].bakList:[]}
                           defaultValue={this.state.defaultValue}
                             defaultBak={this.state.defaultBak}
                         defaultDate={this.state.defaultDate}/>

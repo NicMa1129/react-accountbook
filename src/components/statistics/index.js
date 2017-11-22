@@ -73,20 +73,7 @@ class Statistics extends React.Component {
 
     componentWillMount(){
         // console.log("componentWillMount")
-        let { fetchList } = this.props
-        fetchList()
-        this.chartData = []
-    }
-
-    componentDidMount(){
-        // console.log("componentDidMount")
-        let el = document.querySelector("#chart")
-        el.style.height = el.offsetWidth + "px"
-        // this.chart = HighCharts.chart('chart', option)
-    }
-
-    componentWillReceiveProps(nextProps){
-        let { accountList } =  nextProps
+        let { accountList } =  this.props
         let year = new Date(accountList.list[0].header.date).getFullYear()
         let month = new Date(accountList.list[0].header.date).getMonth()
         this.initData(accountList, year, month)
@@ -94,7 +81,17 @@ class Statistics extends React.Component {
             year: year,
             month: month
         })
+    }
+
+    componentDidMount(){
+        // console.log("componentDidMount")
+        let el = document.querySelector("#chart")
+        el.style.height = el.offsetWidth + "px"
         this.chart = HighCharts.chart('chart', option)
+    }
+
+    componentWillReceiveProps(nextProps){
+
     }
 
     shouldComponentUpdate(nextProps, nextState){

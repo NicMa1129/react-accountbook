@@ -149,20 +149,53 @@ html,body{
 
 /******CloseHeader******/
 .close-header{
-  padding: 5px 10px;
+  padding: 10px 10px;
   background: #ffffff;
   border-bottom: 1px solid #b2b2b2;
-  height: 40px;
+  //height: 40px;
   box-sizing: border-box;
   .close{
     position: absolute;
-    top: 7px;
+    top: 13px;
     right: 5px;
     width: 25px;
     height: 25px;
   }
 }
 /******CloseHeader******/
+
+/******SearchHeader******/
+.search-header{
+  background: #ffffff;
+  padding: 7px 15px 7px 10px;
+  border-bottom: 1px solid $light-gray;
+  .search-panel{
+    position: relative;
+    background: $light-gray;
+    padding-left: 35px;
+    border-radius: 4px;
+    flex: 1;
+    i{
+      position: absolute;
+      left: 9px;
+      top: 5px;
+      color: $gray;
+    }
+    input{
+      border: none;
+      background: $light-gray;
+      color: $gray;
+      height: 30px;
+    }
+  }
+  a{
+    padding: 5px 10px 5px 15px;
+    text-align: center;
+    color: $main-font-color;
+    font-size: 22px;
+  }
+}
+/******SearchHeader******/
 
 /******KeyBoard******/
 .keyboard-container.unshow{

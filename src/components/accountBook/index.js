@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { dateFormat, scrollThrottler } from 'common/base'
 import Footer from 'components/Footer'
 import Header from 'components/Header'
-import { RestoreScroll } from 'react-router-restore-scroll'
+import ActionSheet from 'antd-mobile/lib/action-sheet'
+import 'antd-mobile/lib/action-sheet/style/css'
 
 require('./index.scss')
 
@@ -14,12 +15,14 @@ class AccountBook extends Component {
             show: false,
             showTypeIn: false,
             scrollTimeout: null,
-            fixedNum: 100
+            fixedNum: 100,
+            actionList: ['搜索账单', '共享此账本', '更换背景', '更多']
         }
 
         this.scrollThrottler = this.scrollThrottler.bind(this)
         this.actualScrollHandler = this.actualScrollHandler.bind(this)
         this.goItemDetail = this.goItemDetail.bind(this)
+        this.showActionSheet = this.showActionSheet.bind(this)
     }
 
     componentWillMount(){
@@ -80,6 +83,29 @@ class AccountBook extends Component {
     //     }
     // }
 
+    showActionSheet(){
+        const BUTTONS = this.state.actionList
+        ActionSheet.showActionSheetWithOptions({
+                options: BUTTONS,
+                // cancelButtonIndex: BUTTONS.length - 1,
+                // destructiveButtonIndex: BUTTONS.length - 2,
+                // title: 'title',
+                // message: '请选择账户',
+                maskClosable: true,
+                'data-seed': 'logId',
+                // wrapProps,
+            },
+            buttonIndex => {
+                switch(buttonIndex){
+                    case 0:
+                        this.context.router.push('/searchAccount')
+                        break
+                    default:
+                        break
+                }
+            });
+    }
+
     componentDidMount(){
         let list = this.refs.list
 
@@ -138,13 +164,13 @@ class AccountBook extends Component {
                                             {
                                                 block.header.totalIncome !== 0 ? <span>
                                                     <p>收入：</p>
-                                                    <p>{block.header.totalIncome}</p>
+                                                    <p>{parseFloat(block.header.totalIncome).toFixed(2)}</p>
                                                     </span>:''
                                             }
                                             {
                                                 block.header.totalExpense !== 0 ? <span className="header-expense">
                                                     <p>支出：</p>
-                                                    <p>{block.header.totalExpense}</p>
+                                                    <p>{parseFloat(block.header.totalExpense).toFixed(2)}</p>
                                                     </span>:''
                                             }
                                         </span>
@@ -175,7 +201,8 @@ class AccountBook extends Component {
                     }
                 </div>
                 <Footer doRecordCb={this.props.addAccount}
-                        showTypeIn={this.showTypeIn}/>
+                        showTypeIn={this.showTypeIn}
+                        showActionSheet={this.showActionSheet}/>
             </section>
         )
     }

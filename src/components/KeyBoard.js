@@ -5,7 +5,6 @@ import DatePicker from 'antd-mobile/lib/date-picker'
 import 'antd-mobile/lib/date-picker/style/css'
 import 'antd-mobile/lib/icon/style/css'
 import 'antd-mobile/lib/action-sheet/style/css'
-import { Transition } from 'react-transition-group'
 import { TweenMove } from 'common/move'
 
 const isIPhone = new RegExp('\\biPhone\\b|\\biPod\\b', 'i').test(window.navigator.userAgent);
@@ -174,7 +173,9 @@ class KeyBoard extends Component {
     }
 
     componentWillMount(){
+        console.log("kb componentWillMount")
         let { defaultValue, defaultBak, defaultDate } = this.props
+        console.log(this.props)
         if(defaultDate !== null){
             if(defaultValue !== 0){
                 this.setState({
@@ -190,14 +191,17 @@ class KeyBoard extends Component {
     }
 
     componentDidMount(){
+        console.log("kb componentDidMount")
     }
+
     componentWillReceiveProps(nextProps){
-        let { defaultValue } = nextProps
-        this.setState({
-            value: defaultValue
-        },() => {
-            console.log(this.state.value)
-        })
+        console.log("kb componentWillReceiveProps")
+        // let { defaultValue } = nextProps
+        // this.setState({
+        //     value: defaultValue
+        // },() => {
+        //     console.log(this.state.value)
+        // })
     }
 
     onEnter(node){
@@ -321,8 +325,11 @@ class KeyBoard extends Component {
                     </div>
                     <div className="bak-panel flex-between">
                         <a className="button" onClick={this.showActionSheet}>{this.state.accountType || "现金"}</a>
-                        <DatePicker onChange={this.datePickerOnChange}
-                                    model="datetime">
+                        <DatePicker
+                                value={new Date(this.state.curSelectDate)}
+                                maxDate={new Date()}
+                                onChange={this.datePickerOnChange}
+                                model="datetime">
                             <CustomChildren/>
                         </DatePicker>
                         <a className="button" ref="bak">{this.state.bak === "" ? "备注" : this.state.bak.length > 5 ? this.state.bak.substr(0, 5) + "..." : this.state.bak}</a>

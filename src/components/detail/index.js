@@ -18,25 +18,20 @@ class Detail extends Component {
     }
 
     componentWillMount(){
-        let { fetchList } = this.props
-        fetchList()
+        let { params, accountList } = this.props
+        let { id } = params
+        let blockIndex = id.split('_')[0]
+        let itemIndex = id.split('_')[1]
+        this.setState({
+            accountList: accountList,
+            blockIndex: blockIndex,
+            itemIndex: itemIndex
+            // detailItem: accountList.list[blockIndex].payList[itemIndex]
+        })
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.state.accountList.length === 0){
-            let { params, accountList } = nextProps
-            let { id } = params
-            let blockIndex = id.split('_')[0]
-            let itemIndex = id.split('_')[1]
-            this.setState({
-                accountList: accountList,
-                blockIndex: blockIndex,
-                itemIndex: itemIndex
-                // detailItem: accountList.list[blockIndex].payList[itemIndex]
-            }, () => {
-                console.log(this.state.accountList.list[blockIndex].payList[itemIndex])
-            })
-        }
+
     }
 
     delAccount(){

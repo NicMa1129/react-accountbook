@@ -1,0 +1,94 @@
+@import "./src/static/style/base.scss";
+
+.searchaccount-container{
+  .am-search{
+    background: #ffffff;
+    border-bottom: 1px solid $light-gray-line;
+    .am-search-input{
+      background: $light-gray;
+      input{
+        caret-color: $main-font-color
+      }
+    }
+  }
+  .am-search-cancel{
+    color: $main-font-color;
+  }
+  .content-box{
+    height: 557px;
+    background: #ffffff;
+    .res-box{
+      border-top: 1px solid transparent;
+      height: 100%;
+      .res-item{
+        .res-item__header{
+          background: $under-page-color;
+          padding: 5px 20px;
+          font-size: 12px;
+          color: $gray;
+        }
+        .res-item__body{
+          height: 60px;
+          background: #ffffff;
+          margin-left: 10px;
+          list-style: none;
+          padding-right: 10px;
+          label{
+            span{
+              display: inline-block;
+              margin-left: 10px;
+            }
+          }
+          .type-name{
+            font-weight: 600;
+            font-size: 18px;
+          }
+          .bak{
+            font-size: 12px;
+            margin-top: 6px;
+            color: #616161;
+          }
+          h3{
+            font-weight: 700;
+          }
+          h3.is-expense{
+            color: #0ed4c1;
+          }
+        }
+      }
+      .res-item:last-child .res-item__body{
+        border-bottom: 1px solid $light-gray-line;
+      }
+      .nores{
+        margin-top: 100px;
+        font-size: 14px;
+        text-align: center;
+      }
+      .res-total-header{
+        background: $under-page-color;
+        border-bottom: 1px solid $light-gray-line;
+        padding: 5px 10px 5px 20px;
+        p{
+          display: inline-block;
+          margin: 0;
+          font-size: 12px;
+        }
+      }
+    }
+    .search-tag-box{
+      padding: 0 90px 0 20px;
+      .tag-button{
+        padding: 6px 15px;
+        background: $light-gray;
+        font-size: 14px;
+        list-style: none;
+        display: inline-block;
+        border-radius: 3px;
+        margin-top: 10px;
+        margin-right: 10px;
+      }
+
+    }
+  }
+
+}
