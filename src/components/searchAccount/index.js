@@ -18,11 +18,13 @@ class SearchAccount extends Component {
         super()
         this.state = {
             showRes: false,
-            res: []
+            res: [],
+            searchValue: ""
         }
         this.goBack = this.goBack.bind(this)
         this.searchChange = this.searchChange.bind(this)
         this.search = this.search.bind(this)
+        this.tagSearch = this.tagSearch.bind(this)
     }
 
     componentWillMount(){
@@ -31,6 +33,16 @@ class SearchAccount extends Component {
 
     componentDidMount(){
         this.autoFocusInst.focus();
+        window.addEventListener('click', e => {
+            e.preventDefault()
+            this.autoFocusInst.focus();
+        }, false)
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('click', e => {
+            e.preventDefault()
+        }, false)
     }
 
     componentWillReceiveProps(nextProps){
@@ -46,13 +58,15 @@ class SearchAccount extends Component {
             let res = this.search(val)
             this.setState({
                 showRes: true,
-                res: res
+                res: res,
+                searchValue: val
             })
         }
 
         if(val === "" && this.state.showRes === true){
             this.setState({
-                showRes: false
+                showRes: false,
+                searchValue: val
             })
         }
     }
@@ -73,8 +87,18 @@ class SearchAccount extends Component {
             })
         })
         res = res.sort((a, b) => a.date > b.date)
-        console.log(res)
+        // console.log(res)
         return res
+    }
+
+    tagSearch(e){
+        e.preventDefault()
+        let val = e.target.attributes[1].value
+        this.autoFocusInst.focus()
+        this.searchChange(val)
+        this.setState({
+            searchValue: val
+        })
     }
 
     render(){
@@ -83,7 +107,8 @@ class SearchAccount extends Component {
                 <SearchBar placeholder="类别/备注/金额"
                            ref={ref => this.autoFocusInst = ref}
                            onCancel={this.goBack}
-                            onChange={this.searchChange}/>
+                            onChange={this.searchChange}
+                            value={this.state.searchValue}/>
                 <div className="content-box">
                     {
                         this.state.showRes ? <div className="res-box">
@@ -117,12 +142,12 @@ class SearchAccount extends Component {
                                                     ):<p className="nores">没找到哦，换个关键词试试吧</p>
                                                 }
                                             </div>:(<div className="search-tag-box">
-                                                        <span className="tag-button">月份</span>
-                                                        <span className="tag-button">好</span>
-                                                        <span className="tag-button">午餐</span>
-                                                        <span className="tag-button">水果</span>
-                                                        <span className="tag-button">月份</span>
-                                                        <span className="tag-button">月份</span>
+                                                        <span className="tag-button" value="月份" onClick={this.tagSearch}>月份</span>
+                                                        <span className="tag-button" value="好" onClick={this.tagSearch}>好</span>
+                                                        <span className="tag-button" value="午餐" onClick={this.tagSearch}>午餐</span>
+                                                        <span className="tag-button" value="水果" onClick={this.tagSearch}>水果</span>
+                                                        <span className="tag-button" value="早餐" onClick={this.tagSearch}>早餐</span>
+                                                        <span className="tag-button" value="晚餐" onClick={this.tagSearch}>晚餐</span>
                                                     </div>)
                     }
                 </div>
