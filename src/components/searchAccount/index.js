@@ -31,10 +31,24 @@ class SearchAccount extends Component {
         this.goItemDetail = this.goItemDetail.bind(this)
         this.actualScrollHandler = this.actualScrollHandler.bind(this)
         this.scrollThrottler = this.scrollThrottler.bind(this)
+        this.saveLocationData = this.saveLocationData.bind(this)
+        this.scrollTo = this.scrollTo.bind(this)
+        this.doScrollTo = this.doScrollTo.bind(this)
     }
 
     componentWillMount(){
         // console.log(this.props.location)
+        let resData = localStorage.getItem('__searchRes__')
+        if(resData !== null){
+            let res = JSON.parse(resData)
+            if(res.list.length > 0){
+                this.scrollTop = res.scrollTop
+                this.setState({
+                    res: res.list,
+                    showRes: true
+                })
+            }
+        }
     }
 
     actualScrollHandler(){
@@ -85,6 +99,29 @@ class SearchAccount extends Component {
     componentDidMount(){
         this.autoFocusInst.focus();
         window.addEventListener('click', this.windowClick, false)
+        if(this.state.res.length > 0){
+            let list = this.refs.list
+            list.addEventListener("scroll", this.scrollThrottler, false)
+            if(this.scrollTop > 0){
+                this.scrollTo()
+            }
+        }
+    }
+
+    doScrollTo(){
+        let list = this.refs.list
+        list.scrollTop = list.scrollTop + 15
+        this.isScroll = false
+        if(list.scrollTop < this.scrollTop){
+            this.scrollTo()
+        }
+    }
+
+    scrollTo(){
+        if (!this.isScroll) {
+            requestAnimationFrame(this.doScrollTo)
+            this.isScroll = true
+        }
     }
 
     componentWillUnmount(){
@@ -109,6 +146,11 @@ class SearchAccount extends Component {
     }
 
     goBack(){
+        let res = []
+        this.saveLocationData({
+            list: res,
+            scrollTop: 0
+        })
         this.context.router.goBack()
     }
 
@@ -185,8 +227,18 @@ class SearchAccount extends Component {
         })
     }
 
+    saveLocationData(data){
+        let resData = JSON.stringify(data)
+        localStorage.setItem('__searchRes__', resData)
+    }
+
     goItemDetail(e){
         let id = e.currentTarget.id
+        let scrollTop = document.querySelector(".res-item-wrap").scrollTop
+        this.saveLocationData({
+            list: this.state.res,
+            scrollTop: scrollTop
+        })
         this.context.router.push("/Detail/"+id)
         // this.context.router.pushState({op: true}, '/Detail/'+id)
     }
