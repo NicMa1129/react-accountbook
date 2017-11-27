@@ -11,6 +11,10 @@ import {
     fetchTagListSuccess
 } from './tagList'
 
+import {
+    delSearchRes
+} from './searchAccount'
+
 export {
     addAccount,
     fetchList,
@@ -18,5 +22,6 @@ export {
     fetchTagList,
     fetchTagListSuccess,
     delAccount,
-    editAccount
+    editAccount,
+    delSearchRes
 }

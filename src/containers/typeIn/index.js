@@ -4,7 +4,8 @@ import {
     addAccount,
     fetchTagList,
     fetchList,
-    editAccount
+    editAccount,
+    delSearchRes
 } from 'actions'
 import TypeIn from 'components/typeIn'
 
@@ -30,6 +31,9 @@ const mapDispatchToProps = dispatch => {
         },
         editAccount: data => {
             dispatch(editAccount(data))
+        },
+        delSearchRes: () => {
+            dispatch(delSearchRes())
         }
     }
 }

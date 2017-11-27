@@ -35,11 +35,12 @@ class Detail extends Component {
     }
 
     delAccount(){
-        let { delAccount } = this.props
+        let { delAccount, delSearchRes } = this.props
         delAccount({
             blockIndex: this.state.blockIndex,
             itemIndex: this.state.itemIndex
         })
+        delSearchRes()
         this.context.router.push('/accountbook')
     }
 

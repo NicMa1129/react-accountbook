@@ -131,7 +131,7 @@ class TypeIn extends Component {
         })
     }
     keyBoradSubmit({value, date, bak, isEdit}){
-        let { addAccount, editAccount } = this.props
+        let { addAccount, editAccount, delSearchRes } = this.props
         let tagS = this.state.tagList.filter(tag => tag.selected === true)
         let tagText = tagS.length > 0 ? tagS[0].tagName : "呵呵"
         if(isEdit){
@@ -163,6 +163,7 @@ class TypeIn extends Component {
                 })
             }
         }
+        delSearchRes()
         this.context.router.push('/accountbook')
     }
 

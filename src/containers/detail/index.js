@@ -2,7 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {
     fetchList,
-    delAccount
+    delAccount,
+    delSearchRes
 } from 'actions'
 import Detail from 'components/detail'
 
@@ -21,6 +22,9 @@ const mapDispatchToProps = dispatch => {
         },
         delAccount: data => {
             dispatch(delAccount(data))
+        },
+        delSearchRes: () => {
+            dispatch(delSearchRes())
         }
     }
 }

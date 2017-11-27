@@ -45,7 +45,8 @@ class SearchAccount extends Component {
                 this.scrollTop = res.scrollTop
                 this.setState({
                     res: res.list,
-                    showRes: true
+                    showRes: true,
+                    searchValue: res.searchValue
                 })
             }
         }
@@ -99,6 +100,7 @@ class SearchAccount extends Component {
     componentDidMount(){
         this.autoFocusInst.focus();
         window.addEventListener('click', this.windowClick, false)
+
         if(this.state.res.length > 0){
             let list = this.refs.list
             list.addEventListener("scroll", this.scrollThrottler, false)
@@ -108,11 +110,15 @@ class SearchAccount extends Component {
         }
     }
 
+    // shouldComponentUpdate(nextProps, nextState){
+    //
+    // }
+
     doScrollTo(){
         let list = this.refs.list
         list.scrollTop = list.scrollTop + 15
-        this.isScroll = false
         if(list.scrollTop < this.scrollTop){
+            this.isScroll = false
             this.scrollTo()
         }
     }
@@ -149,7 +155,8 @@ class SearchAccount extends Component {
         let res = []
         this.saveLocationData({
             list: res,
-            scrollTop: 0
+            scrollTop: 0,
+            searchValue: ""
         })
         this.context.router.goBack()
     }
@@ -237,7 +244,8 @@ class SearchAccount extends Component {
         let scrollTop = document.querySelector(".res-item-wrap").scrollTop
         this.saveLocationData({
             list: this.state.res,
-            scrollTop: scrollTop
+            scrollTop: scrollTop,
+            searchValue: this.state.searchValue
         })
         this.context.router.push("/Detail/"+id)
         // this.context.router.pushState({op: true}, '/Detail/'+id)

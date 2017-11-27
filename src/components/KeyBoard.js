@@ -274,6 +274,10 @@ class KeyBoard extends Component {
             width = width + 70
         })
         wrap.style.width = width + "px"
+        // console.log(nextProps)
+        this.setState({
+            bak: ""
+        })
     }
 
     addBak(e){
