@@ -41,9 +41,9 @@ const searchAccount = (location, cb) => {
 }
 const enterTypeIn = (nextState, replace, callback) => {
     let { location } = nextState
-    if(location.action !== 'PUSH'){
-        replace('/accountBook')
-    }
+    // if(location.action !== 'PUSH'){
+    //     replace('/accountBook')
+    // }
     callback()
 }
 const route = (

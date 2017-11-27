@@ -7,8 +7,10 @@ require('./index.scss')
 
 const getTotal = list => {
     let res = 0
-    list.forEach(item => {
-        res = res + parseFloat(item.item.payNum)
+    list.forEach(block => {
+        block.list.forEach(item => {
+            res = res + parseFloat(item.item.payNum)
+        })
     })
     return res.toFixed(2)
 }
@@ -25,28 +27,85 @@ class SearchAccount extends Component {
         this.searchChange = this.searchChange.bind(this)
         this.search = this.search.bind(this)
         this.tagSearch = this.tagSearch.bind(this)
+        this.windowClick = this.windowClick.bind(this)
+        this.goItemDetail = this.goItemDetail.bind(this)
+        this.actualScrollHandler = this.actualScrollHandler.bind(this)
+        this.scrollThrottler = this.scrollThrottler.bind(this)
     }
 
     componentWillMount(){
+        // console.log(this.props.location)
+    }
 
+    actualScrollHandler(){
+        let elBody = document.querySelectorAll(".res-item__list")
+        let elList = Array.from(elBody)
+        let serachPanel = document.querySelector(".am-search")
+        let mainHead = document.querySelector(".res-total-header")
+        let curBody, curHeader, headerP, preHeader, elTop
+        for(let i = 0; i < elList.length; i++){
+            curBody = elList[i]//当前接近顶部的block_body
+            curHeader = curBody.previousElementSibling//当前接近顶部的block_header
+            headerP = curHeader.previousElementSibling//当前接近顶部的占位header
+            preHeader = i > 0 ? elList[i - 1].previousElementSibling:null//当前接近顶部的header的前一个header
+            elTop = curBody.getBoundingClientRect().top
+
+            // console.log("第" + i + "个header的top是： " + elTop)
+            if(elTop <= curHeader.clientHeight + mainHead.clientHeight + serachPanel.clientHeight && elTop > mainHead.clientHeight + serachPanel.clientHeight){//向上滚动时当前block的header fixed
+                if(!curHeader.classList.contains("fixed")){
+                    curHeader.classList.add("fixed")
+                    curHeader.style.top = mainHead.clientHeight + serachPanel.clientHeight + "px"
+                    headerP.classList.add("fixed")
+                    if(preHeader !== null && preHeader.classList.contains("fixed")){
+                        preHeader.classList.remove("fixed")
+                    }
+                }
+                break
+            }else if(elTop > curHeader.clientHeight + mainHead.clientHeight + serachPanel.clientHeight){//向下滚动时当前block的header回归原状态
+                if(curHeader.classList.contains("fixed")){
+                    curHeader.classList.remove("fixed")
+                    headerP.classList.remove("fixed")
+                    if(preHeader !== null && !preHeader.classList.contains("fixed")){
+                        preHeader.classList.add("fixed")
+                    }
+                }
+                break
+            }
+        }
+        this.scrollTimeout = false
+    }
+
+    scrollThrottler(){
+        if (!this.scrollTimeout) {
+            requestAnimationFrame(this.actualScrollHandler)
+            this.scrollTimeout = true
+        }
     }
 
     componentDidMount(){
         this.autoFocusInst.focus();
-        window.addEventListener('click', e => {
-            e.preventDefault()
-            this.autoFocusInst.focus();
-        }, false)
+        window.addEventListener('click', this.windowClick, false)
     }
 
     componentWillUnmount(){
-        window.removeEventListener('click', e => {
-            e.preventDefault()
-        }, false)
+        window.removeEventListener('click', this.windowClick, false)
     }
 
     componentWillReceiveProps(nextProps){
 
+    }
+
+    componentDidUpdate(){
+        let list = this.refs.list
+        if(this.state.res.length > 0){
+            list.removeEventListener("scroll", this.scrollThrottler, false)
+            list.addEventListener("scroll", this.scrollThrottler, false)
+        }
+    }
+
+    windowClick(e){
+        e.preventDefault()
+        this.autoFocusInst.focus();
     }
 
     goBack(){
@@ -65,6 +124,7 @@ class SearchAccount extends Component {
 
         if(val === "" && this.state.showRes === true){
             this.setState({
+                res: [],
                 showRes: false,
                 searchValue: val
             })
@@ -78,15 +138,39 @@ class SearchAccount extends Component {
         list.forEach((block, i) => {
             block.payList.forEach((item, j) => {
                 if(item.payNum === val || item.bak.includes(val) || item.tag.tagName === val){
-                    res.push({
-                        id: i +'_'+j,
-                        date: block.header.date,
-                        item: item
-                    })
+                    if(res.length === 0){
+                        res.push({
+                            date: block.header.date,
+                            list: [{
+                                id: i +'_'+j,
+                                item: item
+                            }]
+                        })
+                    }else{
+                        let r = res.filter( m => dateFormat(block.header.date) === dateFormat(m.date))
+                        if(r.length === 0){
+                            res.push({
+                                date: block.header.date,
+                                list: [{
+                                    id: i +'_'+j,
+                                    item: item
+                                }]
+                            })
+                        }else{
+                            for(let n = 0; n < res.length; n++){
+                                if(dateFormat(res[n].date) === dateFormat(block.header.date)){
+                                    res[n].list.push({
+                                        id: i+'_'+j,
+                                        item: item
+                                    })
+                                }
+                            }
+                        }
+                    }
                 }
             })
         })
-        res = res.sort((a, b) => a.date > b.date)
+        res = res.sort((a, b) => a.date < b.date)
         // console.log(res)
         return res
     }
@@ -99,6 +183,12 @@ class SearchAccount extends Component {
         this.setState({
             searchValue: val
         })
+    }
+
+    goItemDetail(e){
+        let id = e.currentTarget.id
+        this.context.router.push("/Detail/"+id)
+        // this.context.router.pushState({op: true}, '/Detail/'+id)
     }
 
     render(){
@@ -119,21 +209,26 @@ class SearchAccount extends Component {
                                                                 <p>共{this.state.res.length}条</p>
                                                                 <p>总支出：{getTotal(this.state.res)}</p>
                                                             </span>
-                                                            <ul>
+                                                            <ul className="res-item-wrap" ref="list">
                                                                 {
-                                                                    this.state.res.map((item, index) => (
+                                                                    this.state.res.map((block, index) => (
                                                                         <li className="res-item" key={index}>
-                                                                            <div className="res-item__header">{dateFormat(item.date)}</div>
-                                                                            <div id={item.id} className="res-item__body flex-between">
-                                                                                <label className="flex-center">
-                                                                                    <i className={`tag-icon fa fa-${item.item.tag.icon}`} style={{color: `#${item.item.tag.color}`}} aria-hidden="true"/>
-                                                                                    <span>
+                                                                            <div className="header-p"></div>
+                                                                            <div className="res-item__header">{dateFormat(block.date)}</div>
+                                                                            <ul className="res-item__list">
+                                                                                {
+                                                                                    block.list.map((item, j) => <li id={item.id} key={j} className="res-item__body flex-between" onClick={this.goItemDetail}>
+                                                                                        <label className="flex-center">
+                                                                                            <i className={`tag-icon fa fa-${item.item.tag.icon}`} style={{color: `#${item.item.tag.color}`}} aria-hidden="true"/>
+                                                                                            <span>
                                                                                         <p className="type-name">{item.item.tag.tagName}</p>
                                                                                         <p className="bak">{item.item.bak}</p>
                                                                                     </span>
-                                                                                </label>
-                                                                                <h3 className={`${item.item.isExpense?'':'is-expense'}`}>{parseFloat(item.item.payNum).toFixed(2)}</h3>
-                                                                            </div>
+                                                                                        </label>
+                                                                                        <h3 className={`${item.item.isExpense?'':'is-expense'}`}>{parseFloat(item.item.payNum).toFixed(2)}</h3>
+                                                                                    </li>)
+                                                                                }
+                                                                            </ul>
                                                                         </li>
                                                                     ))
                                                                 }

@@ -113,6 +113,7 @@ class AccountBook extends Component {
     }
 
     componentWillUnmount(){
+        let list = this.refs.list
         list.removeEventListener("scroll", this.scrollThrottler, false)
     }
 
@@ -121,7 +122,7 @@ class AccountBook extends Component {
     }
 
     goItemDetail(e){
-        let id = e.target.id
+        let id = e.currentTarget.id
         this.context.router.push("/Detail/"+id)
     }
 
