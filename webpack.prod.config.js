@@ -15,7 +15,7 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: "[name].js",
         publicPath: "/git/react-accountbook/dist/",
-        // publicPath: "/react-test/",
+        // publicPath: "/",
         chunkFilename: "[name].[chunkhash:8].js"
     },
     resolve: {

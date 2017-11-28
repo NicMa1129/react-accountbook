@@ -147,8 +147,11 @@ class SearchAccount extends Component {
     }
 
     windowClick(e){
+        let curTarget= e.target
         e.preventDefault()
-        this.autoFocusInst.focus();
+        if(curTarget.tagName === 'SPAN'){
+            this.autoFocusInst.focus();
+        }
     }
 
     goBack(){
@@ -240,6 +243,7 @@ class SearchAccount extends Component {
     }
 
     goItemDetail(e){
+        // this.autoFocusInst.blur();
         let id = e.currentTarget.id
         let scrollTop = document.querySelector(".res-item-wrap").scrollTop
         this.saveLocationData({

@@ -47,7 +47,7 @@ const enterTypeIn = (nextState, replace, callback) => {
     callback()
 }
 const route = (
-    <Router history={browserHistory}>
+    <Router history={hashHistory}>
         <Route path="/" component={App}>
             <IndexRoute getComponent={accountBook}/>
             <Route path="accountBook" getComponent={accountBook}/>

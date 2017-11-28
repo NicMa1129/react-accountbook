@@ -15,11 +15,12 @@
     color: $main-font-color;
   }
   .content-box{
-    height: 557px;
+    height: 537px;
     background: #ffffff;
     .res-box{
       border-top: 1px solid transparent;
-      height: 100%;
+      //height: 100%;
+      //height: 515px;
       .res-total-header{
         background: $under-page-color;
         border-bottom: 1px solid $light-gray-line;
@@ -31,7 +32,7 @@
         }
       }
       .res-item-wrap{
-        height: 557px;
+        height: 510px;
         overflow: auto;
         .res-item{
           .header-p{
