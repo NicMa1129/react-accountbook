@@ -7,11 +7,12 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-highcharts": "^13.0.0",
+    "react-listview-sticky-header": "^0.6.0",
     "react-scripts": "1.0.13"
   },
   "scripts": {
     "dev": "node server.js",
-    "dist-package": "NODE_ENV=production webpack --config ./webpack.prod.config.js"
+    "dist-package": "NODE_ENV=production webpack --progress --config ./webpack.prod.config.js"
   },
   "devDependencies": {
     "antd-mobile": "^2.0.1",
@@ -26,6 +27,7 @@
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "better-scroll": "^1.5.2",
     "css-loader": "^0.28.7",
     "file-loader": "^0.11.2",
     "grunt": "^1.0.1",
@@ -43,7 +45,6 @@
     "react-router-restore-scroll": "0.0.1",
     "react-router-transition": "^1.1.1",
     "react-router-transitions": "^2.3.3",
-    "react-scroll": "^1.6.4",
     "react-scroll-components": "^0.2.2",
     "react-sticky": "^6.0.1",
     "react-transition-group": "^2.2.1",

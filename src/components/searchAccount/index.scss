@@ -1,6 +1,8 @@
 @import "./src/static/style/base.scss";
 
 .searchaccount-container{
+  height: 100%;
+  background: #ffffff;
   .am-search{
     background: #ffffff;
     border-bottom: 1px solid $light-gray-line;

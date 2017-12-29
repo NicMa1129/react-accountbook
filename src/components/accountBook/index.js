@@ -4,6 +4,7 @@ import { dateFormat, scrollThrottler } from 'common/base'
 import Footer from 'components/Footer'
 import Header from 'components/Header'
 import ActionSheet from 'antd-mobile/lib/action-sheet'
+import BScroll from 'better-scroll'
 import 'antd-mobile/lib/action-sheet/style/css'
 
 require('./index.scss')
@@ -30,58 +31,84 @@ class AccountBook extends Component {
         fetchList()
     }
 
-    actualScrollHandler(){
-        let elBody = document.querySelectorAll(".list-block__body")
-        let elList = Array.from(elBody)
-        let mainHead = document.querySelector(".main-head")
-        let curBody, curHeader, headerP, preHeader, elTop
-        // console.log(elList)
-        for(let i = 0; i < elList.length; i++){
-            curBody = elList[i]//当前接近顶部的block_body
-            curHeader = curBody.previousElementSibling//当前接近顶部的block_header
-            headerP = curHeader.previousElementSibling//当前接近顶部的占位header
-            preHeader = i > 0 ? elList[i - 1].previousElementSibling:null//当前接近顶部的header的前一个header
-            elTop = curBody.getBoundingClientRect().top
+    actualScrollHandler(pos){
+        let scrollY = Math.abs(Math.ceil(pos.y))
+        if(scrollY !== this.lastPosY){
+            // console.log(scrollY)
+            if(scrollY > this.lastPosY){//向上滑
+                let totalH = 0
+                for(let i = 0; i < this.listBlocksH.length; i++){
+                    totalH = totalH + this.listBlocksH[i]
+                    if(scrollY <= totalH && (i === 0 || scrollY > totalH - this.listBlocksH[i - 1])){
+                        let curBlock = this.listBlocksArr[i]
+                        let curHeaderP = curBlock.firstElementChild
+                        let curHeader = curHeaderP.nextElementSibling
 
-            // console.log("第" + i + "个header的top是： " + elTop)
-            if(elTop <= curHeader.clientHeight + mainHead.clientHeight && elTop > mainHead.clientHeight){//向上滚动时当前block的header fixed
-                if(!curHeader.classList.contains("fixed")){
-                    curHeader.classList.add("fixed")
-                    curHeader.style.top = mainHead.clientHeight + "px"
-                    headerP.classList.add("fixed")
-                    if(preHeader !== null && preHeader.classList.contains("fixed")){
-                        preHeader.classList.remove("fixed")
+                        if(!curHeaderP.classList.contains("fixed")){
+                            curHeaderP.classList.add("fixed")
+                            curHeader.classList.add("fixed")
+                            if(i !== 0){
+                                let preBlock = this.listBlocksArr[i - 1]
+                                let preHeaderP = preBlock.firstElementChild
+                                let preHeader = preHeaderP.nextElementSibling
+
+                                preHeaderP.classList.remove("fixed")
+                                preHeader.classList.remove("fixed")
+                            }
+
+                        }
+                        curHeader.style.top = scrollY + "px"
+                        break
                     }
                 }
-                break
-            }else if(elTop > curHeader.clientHeight + mainHead.clientHeight){//向下滚动时当前block的header回归原状态
-                if(curHeader.classList.contains("fixed")){
-                    curHeader.classList.remove("fixed")
-                    headerP.classList.remove("fixed")
-                    if(preHeader !== null && !preHeader.classList.contains("fixed")){
-                        preHeader.classList.add("fixed")
+            }else{//向下滑
+                let totalH = this.listBlocksTotalH
+                for(let i = this.listBlocksH.length - 1; i >= 0; i--){
+                    totalH = totalH - this.listBlocksH[i]
+                    if(scrollY <= totalH + this.listBlocksH[i + 1] && (scrollY > totalH)){
+                        let curBlock = this.listBlocksArr[i]
+                        let curHeaderP = curBlock.firstElementChild
+                        let curHeader = curHeaderP.nextElementSibling
+
+                        let preBlock = i !== 0 ?this.listBlocksArr[i - 1]:null
+                        let preHeaderP = i !== 0 ? preBlock.firstElementChild:null
+                        let preHeader = i !== 0 ? preHeaderP.nextElementSibling:null
+
+                        if(curHeaderP.classList.contains("fixed")){
+                            curHeaderP.classList.remove("fixed")
+                            curHeader.classList.remove("fixed")
+
+                            if(i !== 0){
+                                preHeaderP.classList.add("fixed")
+                                preHeader.classList.add("fixed")
+                            }
+                        }
+                        if(preHeader !== null){
+                            preHeader.style.top = scrollY + "px"
+                        }
+                        break
                     }
                 }
-                break
             }
+            this.lastPosY = scrollY
         }
         this.scrollTimeout = false
     }
 
-    scrollThrottler(){
-        if (!this.scrollTimeout) {
-            requestAnimationFrame(this.actualScrollHandler)
-            this.scrollTimeout = true
-        }
-    }
     // scrollThrottler(){
     //     if (!this.scrollTimeout) {
-    //         this.scrollTimeout = setTimeout(() => {
-    //             this.scrollTimeout = null;
-    //             this.actualScrollHandler();
-    //         }, 17);
+    //         requestAnimationFrame(this.actualScrollHandler)
+    //         this.scrollTimeout = true
     //     }
     // }
+    scrollThrottler(){
+        if (!this.scrollTimeout) {
+            this.scrollTimeout = setTimeout(() => {
+                this.scrollTimeout = null;
+                this.actualScrollHandler();
+            }, 17);
+        }
+    }
 
     showActionSheet(){
         const BUTTONS = this.state.actionList
@@ -100,6 +127,9 @@ class AccountBook extends Component {
                     case 0:
                         this.context.router.push('/searchAccount')
                         break
+                    case 1:
+                        this.context.router.push('/nativeScroll')
+                        break
                     default:
                         break
                 }
@@ -107,18 +137,54 @@ class AccountBook extends Component {
     }
 
     componentDidMount(){
+        console.log("222")
         let list = this.refs.list
-
-        list.addEventListener("scroll", this.scrollThrottler, false)
+        let head = document.querySelector(".main-head")
+        let footer = document.querySelector(".footer")
+        list.style.height = window.innerHeight - head.clientHeight - footer.clientHeight + "px"
+        // list.addEventListener("scroll", this.scrollThrottler, false)
     }
 
     componentWillUnmount(){
-        let list = this.refs.list
-        list.removeEventListener("scroll", this.scrollThrottler, false)
+        // let list = this.refs.list
+        // list.removeEventListener("scroll", this.scrollThrottler, false)
     }
 
     componentWillReceiveProps(nextProps){
+        console.log("333")
+    }
 
+    componentWillUpdate(nextProps, nextState){
+        console.log("444")
+    }
+
+    componentDidUpdate(){
+        console.log("555")
+        let { accountList } = this.props
+
+        if(accountList.list.length > 0){
+            this.listBlocksH = []
+            this.lastPosY = 0
+            this.listBlocksTotalH = 0
+            let listBlocks = document.querySelectorAll(".list-block")
+            this.listBlocksArr = Array.from(listBlocks)
+            this.listBlocksArr.forEach(block => {
+                this.listBlocksH.push(block.clientHeight)
+                this.listBlocksTotalH = this.listBlocksTotalH + block.clientHeight
+            })
+            this.scrollWrap = new BScroll(this.refs.list, {
+                click: true,
+                probeType: 3
+            })
+            this.scrollWrap.on('scroll', pos => {
+                if (!this.scrollTimeout) {
+                    this.scrollTimeout = setTimeout(() => {
+                        this.scrollTimeout = null;
+                        this.actualScrollHandler(pos);
+                    }, 17);
+                }
+            })
+        }
     }
 
     goItemDetail(e){
@@ -154,52 +220,54 @@ class AccountBook extends Component {
                     <LastTotal/>
                 </div>
                 <div className="list" ref="list" id="list">
-                    {
-                        this.props.accountList.list.length !== 0 ? this.props.accountList.list.map(
-                            (block, index) => (
-                                <div className="list-block" key={index}>
-                                    <div className="header-p"></div>
-                                    <div className="list-block__header">
-                                        <p>{dateFormat(block.header.date)}</p>
-                                        <span className="ex-in">
+                    <ul ref="content">
+                        {
+                            this.props.accountList.list.length !== 0 ? this.props.accountList.list.map(
+                                (block, index) => (
+                                    <li className="list-block" key={index}>
+                                        <div className="header-p"></div>
+                                        <div className="list-block__header">
+                                            <p>{dateFormat(block.header.date)}</p>
+                                            <span className="ex-in">
                                             {
                                                 block.header.totalIncome !== 0 ? <span>
                                                     <p>收入：</p>
                                                     <p>{parseFloat(block.header.totalIncome).toFixed(2)}</p>
                                                     </span>:''
                                             }
-                                            {
-                                                block.header.totalExpense !== 0 ? <span className="header-expense">
+                                                {
+                                                    block.header.totalExpense !== 0 ? <span className="header-expense">
                                                     <p>支出：</p>
                                                     <p>{parseFloat(block.header.totalExpense).toFixed(2)}</p>
                                                     </span>:''
-                                            }
+                                                }
                                         </span>
-                                    </div>
-                                    <div className="list-block__body">
-                                        <ul>
-                                            {
-                                                block.payList.map(
-                                                    (item, i) => (
-                                                        <li id={`${index}_${i}`} key={i} className="flex-between" onClick={this.goItemDetail}>
-                                                            <label className="flex-center">
-                                                                <i className={`tag-icon fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
-                                                                <span>
+                                        </div>
+                                        <div className="list-block__body">
+                                            <ul>
+                                                {
+                                                    block.payList.map(
+                                                        (item, i) => (
+                                                            <li id={`${index}_${i}`} key={i} className="flex-between" onClick={this.goItemDetail}>
+                                                                <label className="flex-center">
+                                                                    <i className={`tag-icon fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
+                                                                    <span>
                                                                     <p className="type-name">{item.tag.tagName}</p>
                                                                     <p className="bak">{item.bak}</p>
                                                                 </span>
-                                                            </label>
-                                                            <h3 className={`${item.isExpense?'':'is-expense'}`}>{item.payNum}</h3>
-                                                        </li>
+                                                                </label>
+                                                                <h3 className={`${item.isExpense?'':'is-expense'}`}>{item.payNum}</h3>
+                                                            </li>
+                                                        )
                                                     )
-                                                )
-                                            }
-                                        </ul>
-                                    </div>
-                                </div>
-                            )
-                        ) : ""
-                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                )
+                            ) : ""
+                        }
+                    </ul>
                 </div>
                 <Footer doRecordCb={this.props.addAccount}
                         showTypeIn={this.showTypeIn}

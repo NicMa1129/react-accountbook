@@ -39,6 +39,11 @@ const searchAccount = (location, cb) => {
         cb(null, require('../containers/searchAccount'))
     }, 'searchAccount')
 }
+const nativeScroll = (location, cb) => {
+    require.ensure([], require => {
+        cb(null, require('../components/nativeScroll'))
+    }, 'nativeScroll')
+}
 const enterTypeIn = (nextState, replace, callback) => {
     let { location } = nextState
     // if(location.action !== 'PUSH'){
@@ -55,6 +60,7 @@ const route = (
             <Route path="statistics" getComponent={statistics} onEnter={enterTypeIn}/>
             <Route path="detail/:id" getComponent={detail} onEnter={enterTypeIn}/>
             <Route path="searchAccount" getComponent={searchAccount} onEnter={enterTypeIn}/>
+            <Route path="nativeScroll" getComponent={nativeScroll} onEnter={enterTypeIn}/>
         </Route>
     </Router>
 )

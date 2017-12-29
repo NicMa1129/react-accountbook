@@ -155,6 +155,8 @@ class SearchAccount extends Component {
     }
 
     goBack(){
+        let inputEl = document.querySelector("input")
+        inputEl.blur()
         let res = []
         this.saveLocationData({
             list: res,
@@ -190,31 +192,26 @@ class SearchAccount extends Component {
         list.forEach((block, i) => {
             block.payList.forEach((item, j) => {
                 if(item.payNum === val || item.bak.includes(val) || item.tag.tagName === val){
+                    let obj = {
+                        id: i +'_'+j,
+                        item: item
+                    }
                     if(res.length === 0){
                         res.push({
                             date: block.header.date,
-                            list: [{
-                                id: i +'_'+j,
-                                item: item
-                            }]
+                            list: [obj]
                         })
                     }else{
                         let r = res.filter( m => dateFormat(block.header.date) === dateFormat(m.date))
                         if(r.length === 0){
                             res.push({
                                 date: block.header.date,
-                                list: [{
-                                    id: i +'_'+j,
-                                    item: item
-                                }]
+                                list: [obj]
                             })
                         }else{
                             for(let n = 0; n < res.length; n++){
                                 if(dateFormat(res[n].date) === dateFormat(block.header.date)){
-                                    res[n].list.push({
-                                        id: i+'_'+j,
-                                        item: item
-                                    })
+                                    res[n].list.push(obj)
                                 }
                             }
                         }

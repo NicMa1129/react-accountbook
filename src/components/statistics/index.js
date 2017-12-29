@@ -86,7 +86,7 @@ class Statistics extends React.Component {
     componentDidMount(){
         // console.log("componentDidMount")
         let el = document.querySelector("#chart")
-        el.style.height = el.offsetWidth + "px"
+        // el.style.height = el.offsetWidth + "px"
         this.chart = HighCharts.chart('chart', option)
     }
 
