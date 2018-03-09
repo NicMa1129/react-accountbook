@@ -248,13 +248,13 @@ class AccountBook extends Component {
                                                 {
                                                     block.payList.map(
                                                         (item, i) => (
-                                                            <li id={`${index}_${i}`} key={i} className="flex-between" onClick={this.goItemDetail}>
+                                                            <li id={`${index}_${i}`} key={i} className="flex-between"b onClick={this.goItemDetail}>
                                                                 <label className="flex-center">
                                                                     <i className={`tag-icon fa fa-${item.tag.icon}`} style={{color: `#${item.tag.color}`}} aria-hidden="true"/>
                                                                     <span>
-                                                                    <p className="type-name">{item.tag.tagName}</p>
-                                                                    <p className="bak">{item.bak}</p>
-                                                                </span>
+                                                                        <p className="type-name">{item.tag.tagName}</p>
+                                                                        <p className="bak">{item.bak}</p>
+                                                                    </span>
                                                                 </label>
                                                                 <h3 className={`${item.isExpense?'':'is-expense'}`}>{item.payNum}</h3>
                                                             </li>
