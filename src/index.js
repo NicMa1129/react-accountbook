@@ -6,6 +6,7 @@ import VConsole from 'vconsole'
 import './static/style/main.scss'
 import './static/lib/font-awesome-4.7.0/css/font-awesome.min.css'
 var vConsole = new VConsole();
+console.log('test1')
 ReactDOM.render(
     routes,
     document.getElementById('root')
