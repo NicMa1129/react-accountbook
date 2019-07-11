@@ -15,6 +15,7 @@ console.log('test5')
 console.log('test7')
 console.log('test8')
 console.log('test9')
+console.log('test12')
 ReactDOM.render(
     routes,
     document.getElementById('root')
