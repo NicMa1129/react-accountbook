@@ -7,6 +7,9 @@ import './static/style/main.scss'
 import './static/lib/font-awesome-4.7.0/css/font-awesome.min.css'
 var vConsole = new VConsole();
 console.log('1 add by master')
+console.log('1 add by dev')
+console.log('2 add by dev')
+console.log('3 add by dev')
 console.log('2 add by master')
 ReactDOM.render(
     routes,
