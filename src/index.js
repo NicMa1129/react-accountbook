@@ -7,8 +7,6 @@ import './static/style/main.scss'
 import './static/lib/font-awesome-4.7.0/css/font-awesome.min.css'
 var vConsole = new VConsole();
 console.log('1 add by master')
-console.log('test1 add by test2 branch')
-console.log('test2 add by test2 branch')
 ReactDOM.render(
     routes,
     document.getElementById('root')
