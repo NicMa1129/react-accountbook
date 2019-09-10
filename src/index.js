@@ -9,6 +9,11 @@ var vConsole = new VConsole();
 console.log('1 update by test');
 console.log('2 add by test');
 console.log('3 add by test');
+console.log('1 add by test2');
+console.log('2 add by test2');
+console.log('3 add by test2');
+console.log('4 add by test2');
+console.log('5 add by test2');
 ReactDOM.render(
     routes,
     document.getElementById('root')
