@@ -8,6 +8,7 @@ import './static/lib/font-awesome-4.7.0/css/font-awesome.min.css'
 var vConsole = new VConsole();
 console.log('1 update by test');
 console.log('2 add by test');
+console.log('3 add by test');
 ReactDOM.render(
     routes,
     document.getElementById('root')
