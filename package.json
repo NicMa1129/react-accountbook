@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "highcharts": "^6.0.3",
+    "highcharts": "^7.2.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-highcharts": "^13.0.0",
